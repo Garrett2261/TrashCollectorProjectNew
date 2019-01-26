@@ -10,6 +10,7 @@
     @Html.CheckBox("Picked Up?")
     <input type="submit" value="submit" />
 }
+
 <div>
     <h4>Customers</h4>
     <hr />
@@ -68,6 +69,14 @@
 
         <dd>
             @Html.DisplayFor(model => model.ZipCode)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PickupStatus)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PickupStatus)
         </dd>
 
 

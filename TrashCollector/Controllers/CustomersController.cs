@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Geocoding;
+using Geocoding.Google;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -7,6 +9,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using TrashCollector.Models;
+
 
 namespace TrashCollector.Controllers
 {
@@ -110,19 +113,59 @@ namespace TrashCollector.Controllers
             }
             return View(customers);
         }
+
+        public ActionResult Location(int? id)
+        {
+            var username = User.Identity.Name;
+            var userRole = db.Users.Where(m => m.UserName == username).Select(m => m.UserRole).FirstOrDefault();
+            if(userRole == "Employee")
+            {
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                Customers customers = db.Customers.Find(id);
+                if (customers == null)
+                {
+                    return HttpNotFound();
+                }
+                ViewBag.Address = customers.Address;
+                ViewBag.City = customers.City;
+                ViewBag.State = customers.State;
+                return View(customers);
+            }
+            else if(userRole == "Customer")
+            {
+                return RedirectToAction("Index");
+            }
+            return RedirectToAction("Index");
+            
+        }
+
+        
        
 
         // GET: Customers/Create
         public ActionResult Create()
         {
             var currentUsername = User.Identity.Name;
-            var currentUser = db.Users.Where(m => m.UserName == currentUsername).Select(m => m.Id).First();
-            Customers customer = new Customers
+            var userRole = db.Users.Where(m => m.UserName == currentUsername).Select(m => m.UserRole).FirstOrDefault();
+            if(userRole == "Customer")
             {
-                ApplicationUserId = currentUser
-            };
+                var currentUser = db.Users.Where(m => m.UserName == currentUsername).Select(m => m.Id).First();
+                Customers customer = new Customers
+                {
+                    ApplicationUserId = currentUser
+                };
 
-            return View(customer);
+                return View(customer);
+            }
+            else if(userRole == "Employee")
+            {
+                return RedirectToAction("Index");
+            }
+            return RedirectToAction("Index");
+            
         }
 
         // POST: Customers/Create
@@ -130,7 +173,7 @@ namespace TrashCollector.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,FirstName,LastName,PickupDay,Date,SuspensionStartDate,SuspensionEndDate,ZipCode,ApplicationUserId,PickupBill,PickupStatus")] Customers customers)
+        public ActionResult Create([Bind(Include = "Id,FirstName,LastName,PickupDay,Date,SuspensionStartDate,SuspensionEndDate,ZipCode,ApplicationUserId,PickupBill,PickupStatus,Address,City,State")] Customers customers)
         {
                 if (ModelState.IsValid)
                 {
@@ -197,27 +240,26 @@ namespace TrashCollector.Controllers
             var sameCustomer = db.Customers.Where(c => c.Id == customers.Id).FirstOrDefault();
             if (userRole == "Employee")
             {
-                //sameCustomer.PickupBill = customers.PickupBill;
                 sameCustomer.PickupStatus = customers.PickupStatus;
-                if(customers.PickupStatus == true)
+                if (customers.PickupStatus == true)
                 {
-                    customers.PickupBill = 25.00;
+                    sameCustomer.PickupBill += 25.00;
                 }
-                db.SaveChanges();
-                return RedirectToAction("Index");
-                //if(ModelState.IsValid)
-                //{
-                //    customers.PickupBill += 25.00;
-                //    customers.PickupStatus = true;
-                //    db.Entry(customers).State = EntityState.Modified;
-                //    db.SaveChanges();
-                //    return RedirectToAction("Index");
-                //}
-                //else
-                //{
-                //    return View(customers);
-                //}
+                else if (customers.PickupStatus == false)
+                {
+                    sameCustomer.PickupBill += 0.00;
+                }
+                else
+                {
+                    sameCustomer.PickupBill += 0.00;
+                }
+                if (ModelState.IsValid)
+                {
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
                 
+
             }
             else if (userRole == "Customer")
             {
@@ -228,8 +270,16 @@ namespace TrashCollector.Controllers
                 sameCustomer.SuspensionStartDate = customers.SuspensionStartDate;
                 sameCustomer.SuspensionEndDate = customers.SuspensionEndDate;
                 sameCustomer.ZipCode = customers.ZipCode;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    return View(customers);
+                }
+                
             }
             return RedirectToAction("Index");
 

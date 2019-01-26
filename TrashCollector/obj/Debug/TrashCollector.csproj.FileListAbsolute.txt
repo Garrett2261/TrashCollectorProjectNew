@@ -283,3 +283,5 @@ C:\Users\Garrett\Desktop\Unzipped Files\TrashCollector-master\TrashCollector\obj
 C:\Users\Garrett\Desktop\Unzipped Files\TrashCollector-master\TrashCollector\obj\Debug\TrashCollector.Migrations.CustomerModelChanges.resources
 C:\Users\Garrett\Desktop\Unzipped Files\TrashCollector-master\TrashCollector\obj\Debug\TrashCollector.Migrations.CustomerClassChanges.resources
 C:\Users\Garrett\Desktop\Unzipped Files\TrashCollector-master\TrashCollector\obj\Debug\TrashCollector.Migrations.AnotherMigrationChange.resources
+C:\Users\Garrett\Desktop\Unzipped Files\TrashCollector-master\TrashCollector\obj\Debug\TrashCollector.Migrations.AddedAAddressCityAndStatePropertyToTheCustomerClass.resources
+C:\Users\Garrett\Desktop\Unzipped Files\TrashCollector-master\TrashCollector\bin\Geocoding.dll

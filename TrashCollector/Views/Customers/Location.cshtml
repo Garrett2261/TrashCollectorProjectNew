@@ -1,15 +1,4 @@
-﻿@model TrashCollector.Models.Customers
-
-
-
-<label>
-    Address: @ViewBag.Address
-    City: @ViewBag.City
-    State: @ViewBag.State
-</label>
-
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <title>Geocoding Service</title>
@@ -18,11 +7,14 @@
     <style>
          /* Always set the map height explicitly to define the size of the div
         * element that contains the map. */
-         /*#map {
-             height: auto;
-             width: auto;
-
-         }*/
+         #map {
+             margin-top: auto;
+             height: 30rem;
+             width: 45rem;
+             display: block;
+             margin-left: auto;
+             margin-right: auto;
+         }
          /* Optional: Makes the sample page fill the window. */
          html, body {
              height: 100%;
@@ -31,40 +23,47 @@
          }
 
          #floating-panel {
-             position: absolute;
+             margin-top: 50px;
+             position: static;
              top: 10px;
              left: 25%;
              z-index: 5;
              background-color: #fff;
              padding: 5px;
-             border: 1px solid #999;
              text-align: center;
              font-family: 'Roboto','sans-serif';
              line-height: 30px;
              padding-left: 10px;
+             
+         }
+
+         #addresslabel{
+             text-align: center;
+             margin-top: 50px;
+             margin-bottom: 50px;
          }
     </style>
 </head>
 <body>
-    <div>
-        <input id="address" type="text" value="Milwaukee, WI">
-        <input id="submit" type="button" value="Find ">
+    <div id="floating-panel">
+        <input id="address" type="text" value="Milwaukee">
+        <input id="submit" type="button" value="Find">
+    </div>
+    <div id="addresslabel">
         <label>
             Address: @ViewBag.Address
             City: @ViewBag.City
             State: @ViewBag.State
         </label>
     </div>
-    <div id="map" style="width: 45rem; height: 30rem"></div>
-    <script type="text/javascript">
+    <div id="map"></div>
+    <script>
         function initMap() {
             var map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 8,
-                center: { lat: 43.028870, lng: -87.972237 }
+                center: { lat: 43.0389, lng: -87.9065 }
             });
             var geocoder = new google.maps.Geocoder();
-
-            
 
             document.getElementById('submit').addEventListener('click', function () {
                 geocodeAddress(geocoder, map);
@@ -86,7 +85,8 @@
             });
         }
     </script>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDdOAj1hbJeZ2zAF_MRQL--mr-CsdwOOGI&callback=initMap">
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDdOAj1hbJeZ2zAF_MRQL--mr-CsdwOOGI&callback=initMap">
     </script>
 </body>
 </html>
